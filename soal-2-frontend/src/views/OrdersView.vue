@@ -1,8 +1,7 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold mb-8">Daftar Pesanan</h1>
-    
-    <!-- Tabel Pesanan -->
+
     <div class="bg-white rounded-lg shadow overflow-hidden">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
@@ -15,8 +14,8 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          <tr 
-            v-for="order in formattedOrders" 
+          <tr
+            v-for="order in formattedOrders"
             :key="order.id"
             @click="selectOrder(order.id)"
             class="hover:bg-gray-50 cursor-pointer transition-colors"
@@ -32,17 +31,12 @@
       </table>
     </div>
 
-    <!-- Detail Pesanan -->
-    <OrderDetail 
-      v-if="selectedOrder"
-      :order="selectedOrder" 
-      class="mt-8 animate-fade-in"
-    />
+    <OrderDetail v-if="selectedOrder" :order="selectedOrder" class="mt-8 animate-fade-in" />
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted,ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useOrderStore } from '@/stores/orderStore'
 import OrderDetail from '@/components/OrderDetail.vue'
 import { storeToRefs } from 'pinia'
@@ -59,12 +53,10 @@ onMounted(async () => {
 
 const formattedOrders = computed(() => orderStore.formattedOrders)
 
-
-
 const formatPrice = (price) => {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
-    currency: 'IDR'
+    currency: 'IDR',
   }).format(price)
 }
 
