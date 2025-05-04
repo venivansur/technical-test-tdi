@@ -128,11 +128,13 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useOrderStore } from '@/stores/orderStore'
 import { useProductStore } from '@/stores/productStore'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import Notification from '@/components/Notification.vue'
 
+const router = useRouter()
 const orderStore = useOrderStore()
 const productStore = useProductStore()
 
@@ -222,13 +224,11 @@ const handleSubmit = async () => {
   try {
     loading.value = true
 
-    
     if (!form.value.customer_name?.trim() || form.value.items.length === 0) {
       showNotification('Nama customer dan item pesanan harus diisi', 'error')
       return
     }
 
-   
     await orderStore.createOrder({
       customer_name: form.value.customer_name,
       order_date: form.value.order_date,
@@ -238,7 +238,10 @@ const handleSubmit = async () => {
 
     showNotification('Pesanan berhasil dibuat!')
 
-   
+    setTimeout(() => {
+      router.push('/orders')
+    }, 1500)
+
     form.value = {
       customer_name: '',
       order_date: new Date().toISOString().split('T')[0],
