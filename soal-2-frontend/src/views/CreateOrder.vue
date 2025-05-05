@@ -47,10 +47,23 @@ const availableProducts = computed(() => {
   })
 })
 
+const validateQuantity = () => {
+  if (!newItem.value.product_id) return
+  
+ 
+  if (newItem.value.quantity > selectedProductStock.value) {
+    newItem.value.quantity = selectedProductStock.value
+  }
+ 
+  if (newItem.value.quantity < 1) {
+    newItem.value.quantity = 1
+  }
+}
+
 const canAddItem = computed(() => {
   return (
     newItem.value.product_id &&
-    newItem.value.quantity > 0 &&
+    newItem.value.quantity >= 1 && 
     newItem.value.quantity <= selectedProductStock.value
   )
 })
@@ -64,10 +77,9 @@ const totalOrder = computed(() => {
 const updateAvailableStock = () => {
   const product = productStore.products?.find((p) => p?.id === newItem.value.product_id)
   selectedProductStock.value = product?.stock || 0
+  
 
-  if (newItem.value.quantity > selectedProductStock.value) {
-    newItem.value.quantity = 1
-  }
+  validateQuantity()
 }
 
 const addItem = () => {
@@ -79,7 +91,11 @@ const addItem = () => {
     price: getProductPrice(newItem.value.product_id),
   })
 
-  newItem.value = { product_id: null, quantity: 0 }
+  
+  newItem.value = { 
+    product_id: null, 
+    quantity: null 
+  }
   selectedProductStock.value = 0
 }
 
@@ -242,13 +258,16 @@ onMounted(async () => {
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah*</label>
               <div class="flex">
+              
                 <input
-                  v-model.number="newItem.quantity"
-                  type="number"
-                  min="1"
-                  :max="selectedProductStock"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-l-md focus:ring-blue-500 focus:border-blue-500"
-                />
+  v-model.number="newItem.quantity"
+  type="number"
+  :min="1"
+  :max="selectedProductStock"
+  @input="validateQuantity"
+  :placeholder="newItem.product_id ? 'Masukkan jumlah' : ''"
+  class="w-full px-3 py-2 border border-gray-300 rounded-l-md focus:ring-blue-500 focus:border-blue-500"
+/>
                 <span class="inline-flex items-center px-3 bg-gray-200 text-gray-700 rounded-r-md">
                   /{{ selectedProductStock }}
                 </span>
